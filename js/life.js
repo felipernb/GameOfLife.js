@@ -10,9 +10,11 @@
   var GameOfLife = (function(rows, cols) {
     var grid = new Array(rows);
     var next = new Array(rows);
+    var hasChanged = new Array(rows);
     for (var i = 0; i < grid.length; i++) {
       grid[i] = new Array(cols);
       next[i] = new Array(cols);
+      hasChanged[i] = new Array(cols);
     }
 
     /**
@@ -23,6 +25,7 @@
       for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
           grid[i][j] = Math.random() < p;
+          hasChanged[i][j] = grid[i][j];
         }
       }
     };
@@ -32,13 +35,14 @@
      */
     var draw = function(canvas) {
       var ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgb(166,226,46)';
+      // Clear the whole canvas to redraw
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (var i = 0; i < grid.length; i++) {
         for (var j = 0; j < grid[i].length; j++) {
           if (grid[i][j]) {
+            // Use a different color if the cell has just changed
+            ctx.fillStyle = hasChanged[i][j] ? 'rgb(253,151,31)' : 'rgb(166,226,46)';
             ctx.fillRect(j*cellSize, i*cellSize, cellSize, cellSize);
-          } else {
-            ctx.clearRect(j*cellSize, i*cellSize, cellSize, cellSize);
           }
         }
       }
@@ -85,6 +89,7 @@
             var c = countNeighboors(i, j);
             next[i][j] = (c == 3 || (grid[i][j] && c == 2)) ;
             if (next[i][j]) cells++;
+            hasChanged[i][j] = next[i][j] != grid[i][j];
           }
         }
         copy(next, grid);

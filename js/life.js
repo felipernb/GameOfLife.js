@@ -1,6 +1,6 @@
 (function () {
   var canvas = document.getElementById('grid');
-  var cellSize = 10;
+  var cellSize = 5;
   var w = Math.floor(window.innerWidth / cellSize) * cellSize;
   var h = Math.floor(window.innerHeight / cellSize) * cellSize;
 

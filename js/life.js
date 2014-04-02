@@ -1,6 +1,6 @@
 (function () {
   var canvas = document.getElementById('grid');
-  var cellSize = 10;
+  var cellSize = 5;
   var w = Math.floor(window.innerWidth / cellSize) * cellSize;
   var h = Math.floor(window.innerHeight / cellSize) * cellSize;
 
@@ -94,7 +94,6 @@
         }
         copy(next, grid);
         if (callback) callback();
-        console.info(steps, cells);
       };
     })();
 
@@ -111,11 +110,14 @@
 
     var init = function(canvas) {
       randomSeed();
-      var f = function() {
-        nextGeneration(function() { draw(canvas); });
-        window.requestAnimationFrame(f);
+      var redraw = function () {
+        draw(canvas);
       };
-      f();
+
+      (function f() {
+        nextGeneration(redraw);
+        window.requestAnimationFrame(f);
+      })();
     };
 
     return {
